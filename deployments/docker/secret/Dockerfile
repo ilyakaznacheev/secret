@@ -11,4 +11,10 @@ RUN go get
 
 RUN go build  -o bin/secret main.go
 
-ENTRYPOINT ["./bin/secret"]
+FROM alpine
+
+WORKDIR /app
+
+COPY --from=0 /opt/code/bin/secret /app/
+
+ENTRYPOINT ["./secret"]
