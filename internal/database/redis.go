@@ -7,7 +7,7 @@ import (
 	"log"
 
 	"github.com/go-redis/redis"
-	"github.com/ilyakaznacheev/secret/models"
+	"github.com/ilyakaznacheev/secret/internal/models"
 )
 
 const (

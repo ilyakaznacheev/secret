@@ -6,7 +6,6 @@ services:
 
   secret:
     build: 
-      dockerfile:  deployments/docker/secret/Dockerfile
       context: .
     container_name: secret
     ports:

@@ -11,7 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-openapi/strfmt"
-	"github.com/ilyakaznacheev/secret/models"
+	"github.com/ilyakaznacheev/secret/internal/models"
 )
 
 var (
