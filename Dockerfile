@@ -9,7 +9,7 @@ RUN apk update && apk upgrade && \
 
 RUN go get
 
-RUN go build  -o bin/secret main.go
+RUN go build -o bin/secret cmd/secret/secret.go
 
 FROM alpine
 

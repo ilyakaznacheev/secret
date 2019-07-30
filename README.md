@@ -52,7 +52,13 @@ or download it from this page manually.
 
 ### Run Local
 
-You need to start Redis first. The default connection path is `localhost:5050` but you can overwrite it using `REDIS_URL` environment variable. Run ```go run main.go -h` for more info.
+You need to start Redis first. The default connection path is `localhost:5050` but you can overwrite it using `REDIS_URL` environment variable. Run ```go run cmd/secret/secret.go -h` for more info.
+
+To run the app:
+
+```bash
+go run cmd/secret/secret.go
+```
 
 ### Docker Compose
 
