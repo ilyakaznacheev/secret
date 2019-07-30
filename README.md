@@ -27,17 +27,17 @@ Secret Server helps to securely store secrets and get them back when needed.
 
 ## About Secret Server
 
-Secret server is designed to mace secret storage easier. Simple API allowes to save and get back your secrets, and also set expiration time and view limit.
+The secret server is designed to mace secret storage easier. Simple API allows to save and get back your secrets, and also set expiration time and view limit.
 
 ## Requirements
 
 If you run the app using docker-compose you only need it to start and a git to download a package.
 
-Otherwise you need Golang 1.11+ with modules enabled to compile the app and a Redis to store the secrets.
+Otherwise, you need Golang 1.11+ with modules enabled to compile the app and a Redis to store the secrets.
 
 ## Usage
 
-Here is a short manual how to download and use the app.
+Here is a short manual on how to download and use the app.
 
 ### Download
 
@@ -88,7 +88,7 @@ cd remote-monitoring
 docker-compose up
 ```
 
-Same as above, Grafana will start on `localhost:3000`. There is a preconfigured dashpoard for the app, but you can build your own.
+Same as above, Grafana will start on `localhost:3000`. There is a preconfigured dashboard for the app, but you can build your own.
 
 ## API documentation
 
