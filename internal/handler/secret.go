@@ -23,6 +23,7 @@ var (
 type SecretHandler struct {
 	db      Database
 	nowFunc func() time.Time
+	keygen  func() string
 }
 
 // NewSecretHandler creates a new API handler
@@ -30,6 +31,7 @@ func NewSecretHandler(db Database) *SecretHandler {
 	return &SecretHandler{
 		db:      db,
 		nowFunc: time.Now,
+		keygen:  generateKey,
 	}
 }
 
@@ -111,7 +113,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 
 	// validity checks
 	if expireCounter <= 0 {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": fmt.Errorf("wrong expireAfterViews value %d", expireCounter)})
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": fmt.Sprintf("wrong expireAfterViews value %d", expireCounter)})
 		return
 	}
 
@@ -122,7 +124,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 	}
 
 	// encrypt secret
-	key := generateKey()
+	key := h.keygen()
 	encSecret, err := encryptSecret(key, secret)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": err.Error()})
