@@ -5,7 +5,7 @@ The simple service to manage secrets
 [![Go Report Card](https://goreportcard.com/badge/github.com/ilyakaznacheev/secret)](https://goreportcard.com/report/github.com/ilyakaznacheev/secret) 
 [![GoDoc](https://godoc.org/github.com/ilyakaznacheev/secret?status.svg)](https://godoc.org/github.com/ilyakaznacheev/secret)
 [![Build Status](https://travis-ci.org/ilyakaznacheev/secret.svg?branch=master)](https://travis-ci.org/ilyakaznacheev/secret)
-[![Heroku](https://pyheroku-badge.herokuapp.com/?app=secret&root=api&style=flat)](https://secret-web.herokuapp.com/)
+[![Heroku](https://pyheroku-badge.herokuapp.com/?app=secret-web&root=v1&style=flat)](https://secret-web.herokuapp.com/)
 [![Coverage Status](https://codecov.io/github/ilyakaznacheev/secret/coverage.svg?branch=master)](https://codecov.io/gh/ilyakaznacheev/secret)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
