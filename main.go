@@ -52,7 +52,8 @@ func metricsMiddleware(hf gin.HandlerFunc, ms *metricSet) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		hf(c)
-		respTimeMSec := float64(time.Now().Sub(start).Nanoseconds()) / 1000.0
+		// nanosec to millisec
+		respTimeMSec := float64(time.Now().Sub(start).Nanoseconds()) / 1000000.0
 
 		ms.requestCounter.Inc()
 		ms.responceTimeGauge.Set(respTimeMSec)
