@@ -46,7 +46,7 @@ func TestSecretHandler_GetSecret(t *testing.T) {
 		secretID string
 		respCode int
 		respBody string
-		db       Database
+		db       testDB
 	}{
 		{
 			name:     "simple",
@@ -57,7 +57,7 @@ func TestSecretHandler_GetSecret(t *testing.T) {
 				secret: &models.Secret{
 					SecretBase: models.SecretBase{
 						CreatedAt:      now,
-						ExpiresAt:      &future},
+						ExpiresAt:      &future,
 						RemainingViews: 100,
 						SecretText:     "test",
 					},
@@ -68,6 +68,7 @@ func TestSecretHandler_GetSecret(t *testing.T) {
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
@@ -84,7 +85,8 @@ func TestSecretHandler_GetSecret(t *testing.T) {
 
 			assert.Equal(t, tt.respCode, w.Code)
 			assert.Equal(t, tt.respBody, w.Body.String())
-			assert.JSONEq(t, expected, actual, msgAndArgs)
+			assert.Equal(t, tt.secret, tt.db.hash)
+			// assert.JSONEq(t, expected, actual, msgAndArgs)
 
 		})
 	}
