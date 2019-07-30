@@ -10,14 +10,12 @@ import (
 )
 
 // MetricsMiddleware adds Prometheus monitoring to the endpoint handler
-func MetricsMiddleware(hf gin.HandlerFunc, endpointName string) gin.HandlerFunc {
+func MetricsMiddleware(hf gin.HandlerFunc, ms *MetricSet) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		hf(c)
 		// nanosec to millisec
 		respTimeMSec := float64(time.Now().Sub(start).Nanoseconds()) / 1000000.0
-
-		ms := newMetricSet(endpointName)
 
 		ms.requestCounter.Inc()
 		ms.responceTimeGauge.Set(respTimeMSec)
@@ -25,21 +23,22 @@ func MetricsMiddleware(hf gin.HandlerFunc, endpointName string) gin.HandlerFunc 
 	}
 }
 
-type metricSet struct {
+// MetricSet is a set of Prometheus metrics of endpoint
+type MetricSet struct {
 	endpointName         string
 	requestCounter       prometheus.Counter
 	responceTimeGauge    prometheus.Gauge
 	responceTimeQuantile prometheus.Summary
 }
 
-// newMetricSet creates a metric for an endpoint
-func newMetricSet(endpoint string) *metricSet {
+// NewMetricSet creates a metric for an endpoint
+func NewMetricSet(endpoint string) *MetricSet {
 	cl := map[string]string{
 		"ip":       getLocalIP(),
 		"endpoint": endpoint,
 	}
 
-	ms := metricSet{
+	ms := MetricSet{
 		endpointName: endpoint,
 
 		requestCounter: promauto.NewCounter(

@@ -27,8 +27,8 @@ func Run(conf config.Config) error {
 	router.GET("/", handler.RedirectTo(conf.Redirect.Root))
 
 	v1 := router.Group("/v1")
-	v1.POST("/secret", monitoring.MetricsMiddleware(h.PostSecret, "secret_post"))
-	v1.GET("/secret/:hash", monitoring.MetricsMiddleware(h.GetSecret, "secret_get"))
+	v1.POST("/secret", monitoring.MetricsMiddleware(h.PostSecret, monitoring.NewMetricSet("secret_post")))
+	v1.GET("/secret/:hash", monitoring.MetricsMiddleware(h.GetSecret, monitoring.NewMetricSet("secret_get")))
 	v1.GET("/", handler.RedirectTo(conf.Redirect.API))
 
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
