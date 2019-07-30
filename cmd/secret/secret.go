@@ -10,8 +10,8 @@ import (
 	"log"
 
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/ilyakaznacheev/secret"
 	"github.com/ilyakaznacheev/secret/internal/config"
-	"github.com/ilyakaznacheev/secret/internal/server"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 	cleanenv.ReadEnv(&conf)
 
 	// Run service
-	if err := server.Run(conf); err != nil {
+	if err := secret.Run(conf); err != nil {
 		log.Fatal(err)
 	}
 }
