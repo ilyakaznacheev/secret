@@ -9,7 +9,7 @@ require (
 	github.com/go-openapi/swag v0.19.4
 	github.com/go-openapi/validate v0.19.2
 	github.com/go-redis/redis v6.15.2+incompatible
-	github.com/ilyakaznacheev/cleanenv v1.0.1
+	github.com/ilyakaznacheev/cleanenv v1.1.0
 	github.com/mattn/go-isatty v0.0.8 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect

@@ -1,6 +1,12 @@
+/*
+Package main is a secret service entry-point.
+
+The secres servise helps to store secrets and get them by unique address.
+*/
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,11 +20,16 @@ import (
 )
 
 func main() {
-
 	var conf Config
+
+	// process flags and update help function
+	flag.Usage = cleanenv.Usage(&conf, nil, flag.Usage)
+	flag.Parse()
+
+	// read config
 	cleanenv.ReadEnv(&conf)
 
-	db, err := database.NewRedisDB(conf.Redis.Host+":"+conf.Redis.Port, conf.Redis.Password, 0)
+	db, err := database.NewRedisDB(conf.Redis.URL, conf.Redis.Password, 0)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
@@ -42,15 +53,14 @@ func main() {
 
 // RedisConfig is a redis-related configuration
 type RedisConfig struct {
-	Port     string `env:"REDIS_PORT" env-default:"5050"`
-	Host     string `env:"REDIS_HOST" env-default:"localhost"`
-	Password string `env:"REDIS_PASSWORD"`
+	URL      string `env:"REDIS_URL" env-default:":5050" env-description:"URL of Redis server"`
+	Password string `env:"REDIS_PASSWORD" env-description:"Redis password"`
 }
 
 // ServerConfig is a server-related configuration
 type ServerConfig struct {
-	Port string `env:"SERVER_PORT,PORT" env-default:"8080"`
-	Host string `env:"SERVER_HOST"`
+	Port string `env:"SERVER_PORT,PORT" env-default:"8080" env-description:"Server port"`
+	Host string `env:"SERVER_HOST" env-description:"Server host"`
 }
 
 // Config is an application configuration structure
