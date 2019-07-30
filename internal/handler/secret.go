@@ -40,14 +40,14 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	hash := c.Param("hash")
 	s, err := h.db.GetSecret(hash)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, err)
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	// validity checks
 	if s.ExpiresAt != nil && now.After(*s.ExpiresAt) {
 		log.Printf("secret %s expire time is out", hash)
-		c.AbortWithStatusJSON(http.StatusNotFound, ErrSecretOutdated)
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": ErrSecretOutdated.Error()})
 		defer h.db.DeleteSecret(hash)
 		return
 	}
@@ -55,12 +55,12 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	if s.RemainingViews > 0 {
 		s.RemainingViews--
 		if err := h.db.UpdateSecret(hash, *s); err != nil {
-			c.AbortWithStatusJSON(http.StatusNotFound, err)
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
 	} else {
 		log.Printf("secret %s expire counter is out", hash)
-		c.AbortWithStatusJSON(http.StatusNotFound, ErrSecretOutdated)
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": ErrSecretOutdated.Error()})
 		defer h.db.DeleteSecret(hash)
 		return
 	}
@@ -68,7 +68,7 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	// decrypt secret
 	encSecret, err := decryptSecret(hash, s.SecretText)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, err)
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -99,19 +99,19 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 
 	expireCounter, err := strconv.Atoi(expireCounterStr)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, err)
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": err.Error()})
 		return
 	}
 
 	expireTimeout, err := strconv.Atoi(expireTimeoutStr)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, err)
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": err.Error()})
 		return
 	}
 
 	// validity checks
 	if expireCounter <= 0 {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, fmt.Errorf("wrong expireAfterViews value %d", expireCounter))
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": fmt.Errorf("wrong expireAfterViews value %d", expireCounter)})
 		return
 	}
 
@@ -125,7 +125,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 	key := generateKey()
 	encSecret, err := encryptSecret(key, secret)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, err)
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -141,7 +141,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 
 	// save to database
 	if err := h.db.CreateSecret(key, s); err != nil {
-		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, err)
+		c.AbortWithStatusJSON(http.StatusMethodNotAllowed, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -2,7 +2,6 @@ package secret
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/ilyakaznacheev/secret/internal/config"
@@ -16,8 +15,7 @@ import (
 func Run(conf config.Config) error {
 	db, err := database.NewRedisDB(conf.Redis.URL)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(2)
+		return err
 	}
 
 	h := handler.NewSecretHandler(db)
