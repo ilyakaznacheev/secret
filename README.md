@@ -21,8 +21,7 @@ Secret Server helps to securely store secrets and get them back when needed.
     - [Download](#download)
     - [Run Local](#run-local)
     - [Docker Compose](#docker-compose)
-    - [Deployment](#deployment)
-        - [Heroku](#heroku)
+    - [Monitoring](#monitoring)
 - [API documentation](#api-documentation)
 - [Contributing](#contributing)
 
@@ -72,9 +71,24 @@ It will start the service with Redis DB, and also Prometheus metrics with Grafan
 
 Service will be on `localhost:8080` and Grafana will be on `localhost:3000`.
 
-### Deployment
+### Monitoring
 
-#### Heroku
+The app is ready for Prometheus monitoring.
+
+To start it locally, just run 
+
+```bash
+docker-compose up
+```
+
+Also, you can monitor online deployment:
+
+```bash
+cd remote-monitoring
+docker-compose up
+```
+
+Same as above, Grafana will start on `localhost:3000`. There is a preconfigured dashpoard for the app, but you can build your own.
 
 ## API documentation
 

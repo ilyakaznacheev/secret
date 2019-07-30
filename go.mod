@@ -14,6 +14,8 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/prometheus/client_golang v1.0.0
+	github.com/stretchr/testify v1.3.0
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859 // indirect
 	golang.org/x/sys v0.0.0-20190621062556-bf70e4678053 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1
 )

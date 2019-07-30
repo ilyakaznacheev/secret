@@ -11,8 +11,7 @@ before_install:
   - go get 
 
 script:
-  - cd cmd/secret
-  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - ./deployments/ci/test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

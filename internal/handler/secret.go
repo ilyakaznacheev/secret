@@ -21,19 +21,21 @@ var (
 
 // SecretHandler is a REST API handler for secrete service
 type SecretHandler struct {
-	db Database
+	db      Database
+	nowFunc func() time.Time
 }
 
 // NewSecretHandler creates a new API handler
 func NewSecretHandler(db Database) *SecretHandler {
 	return &SecretHandler{
-		db: db,
+		db:      db,
+		nowFunc: time.Now,
 	}
 }
 
 // GetSecret returns a secret if possible
 func (h *SecretHandler) GetSecret(c *gin.Context) {
-	now := time.Now()
+	now := h.nowFunc()
 
 	hash := c.Param("hash")
 	s, err := h.db.GetSecret(hash)
@@ -115,7 +117,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 
 	var expTime *time.Time
 	if expireTimeout > 0 {
-		exp := time.Now().Add(time.Minute * time.Duration(expireTimeout))
+		exp := h.nowFunc().Add(time.Minute * time.Duration(expireTimeout))
 		expTime = &exp
 	}
 
@@ -130,7 +132,7 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 	// fill db model data
 	s := models.Secret{
 		SecretBase: models.SecretBase{
-			CreatedAt:      time.Now(),
+			CreatedAt:      h.nowFunc(),
 			ExpiresAt:      expTime,
 			RemainingViews: int32(expireCounter),
 			SecretText:     encSecret,
