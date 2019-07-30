@@ -164,10 +164,12 @@ func (h *SecretHandler) PostSecret(c *gin.Context) {
 	getResponseFunc(c)(&res)
 }
 
-// Redirect redirect request
-func (h *SecretHandler) Redirect(c *gin.Context) {
-	c.Redirect(http.StatusMovedPermanently, "https://github.com/ilyakaznacheev/secret")
-	c.Abort()
+// RedirectTo redirects to provided url
+func RedirectTo(url string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Redirect(http.StatusMovedPermanently, url)
+		c.Abort()
+	}
 }
 
 // getResponseFunc returns data marshalling function for accepted MIME type

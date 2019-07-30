@@ -14,7 +14,7 @@ import (
 
 // Run start the server
 func Run(conf config.Config) error {
-	db, err := database.NewRedisDB(conf.Redis.URL, conf.Redis.Password, 0)
+	db, err := database.NewRedisDB(conf.Redis.URL)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(2)
@@ -24,11 +24,12 @@ func Run(conf config.Config) error {
 
 	router := gin.Default()
 
-	router.GET("/", h.Redirect)
+	router.GET("/", handler.RedirectTo(conf.Redirect.Root))
 
 	v1 := router.Group("/v1")
 	v1.POST("/secret", monitoring.MetricsMiddleware(h.PostSecret, "secret_post"))
 	v1.GET("/secret/:hash", monitoring.MetricsMiddleware(h.GetSecret, "secret_get"))
+	v1.GET("/", handler.RedirectTo(conf.Redirect.API))
 
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

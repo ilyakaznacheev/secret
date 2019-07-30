@@ -21,12 +21,7 @@ type RedisDB struct {
 }
 
 // NewRedisDB creates a new database connection to Redis
-func NewRedisDB(address, password string, db int) (*RedisDB, error) {
-	// client := redis.NewClient(&redis.Options{
-	// 	Addr:     address,
-	// 	Password: password,
-	// 	DB:       db,
-	// })
+func NewRedisDB(address string) (*RedisDB, error) {
 	opts, err := redis.ParseURL(address)
 	if err != nil {
 		return nil, err
