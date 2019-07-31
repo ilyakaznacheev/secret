@@ -2,7 +2,9 @@ package config
 
 // RedisConfig is a redis-related configuration
 type RedisConfig struct {
-	URL string `env:"REDIS_URL" env-default:":5050" env-description:"URL of Redis server including options"`
+	URL  string `env:"REDIS_URL" env-description:"URL of Redis server including options"`
+	Port string `env:"REDIS_PORT" env-description:"Redis port"`
+	Host string `env:"REDIS_HOST" env-description:"Redis host"`
 }
 
 // ServerConfig is a server-related configuration

@@ -13,7 +13,15 @@ import (
 
 // Run start the server
 func Run(conf config.Config) error {
-	db, err := database.NewRedisDB(conf.Redis.URL)
+	var (
+		db  *database.RedisDB
+		err error
+	)
+	if conf.Redis.URL != "" {
+		db, err = database.NewRedisDBWithOpts(conf.Redis.URL)
+	} else {
+		db, err = database.NewRedisDB(conf.Redis.Host + ":" + conf.Redis.Port)
+	}
 	if err != nil {
 		return err
 	}

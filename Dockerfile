@@ -7,7 +7,7 @@ ADD ./ /opt/code/
 RUN apk update && apk upgrade && \
     apk add --no-cache git
 
-RUN go get
+RUN go mod download
 
 RUN go build -o bin/secret cmd/secret/secret.go
 

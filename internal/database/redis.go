@@ -20,23 +20,46 @@ type RedisDB struct {
 	client *redis.Client
 }
 
-// NewRedisDB creates a new database connection to Redis
-func NewRedisDB(address string) (*RedisDB, error) {
+// NewRedisDBWithOpts creates a new database connection to Redis with url options
+func NewRedisDBWithOpts(address string) (*RedisDB, error) {
 	opts, err := redis.ParseURL(address)
 	if err != nil {
 		return nil, err
 	}
 	client := redis.NewClient(opts)
 
-	pong, err := client.Ping().Result()
-	if err != nil {
+	if err := checkRedisConnection(client); err != nil {
 		return nil, err
 	}
 
-	log.Println(pong)
 	return &RedisDB{
 		client: client,
 	}, nil
+}
+
+// NewRedisDB creates a new database connection to Redis
+func NewRedisDB(address string) (*RedisDB, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr: address,
+	})
+
+	if err := checkRedisConnection(client); err != nil {
+		return nil, err
+	}
+
+	return &RedisDB{
+		client: client,
+	}, nil
+}
+
+func checkRedisConnection(c *redis.Client) error {
+	pong, err := c.Ping().Result()
+	if err != nil {
+		return err
+	}
+
+	log.Println(pong)
+	return nil
 }
 
 // GetSecret returns a secret or errors
@@ -88,11 +111,11 @@ func (r *RedisDB) CreateSecret(hash string, s models.Secret) error {
 
 // DeleteSecret removes existing secret
 func (r *RedisDB) DeleteSecret(hash string) error {
-	if err := r.client.HDel(hash).Err(); err != nil {
+	if err := r.client.HDel(hashSecretKey, hash).Err(); err != nil {
 		return err
 	}
-	r.client.Del(versionKey(hash))
-	return nil
+
+	return r.client.Del(versionKey(hash)).Err()
 }
 
 // UpdateSecret decreases secret view counter

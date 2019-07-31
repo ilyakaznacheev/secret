@@ -56,7 +56,11 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	if s.ExpiresAt != nil && now.After(*s.ExpiresAt) {
 		log.Printf("secret %s expire time is out", hash)
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": ErrSecretOutdated.Error()})
-		defer h.db.DeleteSecret(hash)
+		defer func(hs string) {
+			if err := h.db.DeleteSecret(hs); err != nil {
+				log.Printf("secret '%s' deletion error: %v", hs, err)
+			}
+		}(hash)
 		return
 	}
 
@@ -70,7 +74,11 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	} else {
 		log.Printf("secret %s expire counter is out", hash)
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": ErrSecretOutdated.Error()})
-		defer h.db.DeleteSecret(hash)
+		defer func(hs string) {
+			if err := h.db.DeleteSecret(hs); err != nil {
+				log.Printf("secret '%s' deletion error: %v", hs, err)
+			}
+		}(hash)
 		return
 	}
 
