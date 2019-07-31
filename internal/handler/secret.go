@@ -19,9 +19,11 @@ var (
 	ErrSecretOutdated = errors.New("secret isn't valid anymore")
 )
 
-// SecretHandler is a REST API handler for secrete service
+// SecretHandler is a REST API handler for secret service
 type SecretHandler struct {
-	db      Database
+	db Database
+
+	// main functions can be injected for test purposes
 	nowFunc func() time.Time
 	keygen  func() string
 }
@@ -35,7 +37,9 @@ func NewSecretHandler(db Database) *SecretHandler {
 	}
 }
 
-// GetSecret returns a secret if possible
+// GetSecret returns a secret if possible.
+//
+// It tries to get a secret by hash, if found, checks view counter and TTL. If any of checks fails, the method will delete this secret as expired. Otherwise, it will decrement view counter and return the secret.
 func (h *SecretHandler) GetSecret(c *gin.Context) {
 	now := h.nowFunc()
 
@@ -47,6 +51,8 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	}
 
 	// validity checks
+
+	// TTL check
 	if s.ExpiresAt != nil && now.After(*s.ExpiresAt) {
 		log.Printf("secret %s expire time is out", hash)
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": ErrSecretOutdated.Error()})
@@ -54,6 +60,7 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 		return
 	}
 
+	// view counter check
 	if s.RemainingViews > 0 {
 		s.RemainingViews--
 		if err := h.db.UpdateSecret(hash, *s); err != nil {
@@ -92,7 +99,9 @@ func (h *SecretHandler) GetSecret(c *gin.Context) {
 	getResponseFunc(c)(&res)
 }
 
-// PostSecret creates a new secret
+// PostSecret creates a new secret.
+//
+// The method verifies incoming data and creates a new encrypted secret in the database.
 func (h *SecretHandler) PostSecret(c *gin.Context) {
 	// read and parse parameters
 	secret := c.PostForm("secret")
@@ -190,6 +199,7 @@ func getResponseFunc(c *gin.Context) func(interface{}) {
 				c.XML(http.StatusOK, v)
 			}
 		}
+		// add more types if needed here
 	}
 	// default json
 	return func(v interface{}) {

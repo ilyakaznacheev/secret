@@ -22,6 +22,7 @@ Secret Server helps to securely store secrets and get them back when needed.
     - [Run Local](#run-local)
     - [Docker Compose](#docker-compose)
     - [Monitoring](#monitoring)
+- [Scalability](#scalability)
 - [API documentation](#api-documentation)
 - [Contributing](#contributing)
 
@@ -89,6 +90,10 @@ docker-compose up
 ```
 
 Same as above, Grafana will start on `localhost:3000`. There is a preconfigured dashboard for the app, but you can build your own.
+
+## Scalability
+
+The service is horizontally scalable. It is lock-free and uses CAS to prevent data races. You can run as many replicas as you need to fulfill your API quota requirements.
 
 ## API documentation
 

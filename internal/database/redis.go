@@ -46,6 +46,7 @@ func (r *RedisDB) GetSecret(hash string) (*models.Secret, error) {
 		return nil, err
 	}
 
+	// get secret from the hash map
 	str, err := r.client.HGet(hashSecretKey, hash).Result()
 	if err != nil {
 		return nil, err
@@ -129,6 +130,7 @@ func (r *RedisDB) UpdateSecret(hash string, s models.Secret) error {
 	}, versionKey(hash))
 }
 
+// versionKey returns a Redis version counter key
 func versionKey(hash string) string {
 	return fmt.Sprintf("%s:%s", hashVersionKey, hash)
 }
