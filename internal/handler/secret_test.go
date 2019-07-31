@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -257,6 +258,9 @@ func TestSecretHandler_GetSecret(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
+			gin.SetMode(gin.ReleaseMode)
+			gin.DefaultWriter = ioutil.Discard
+
 			router := gin.New()
 			h := SecretHandler{
 				db:      tt.db,
@@ -412,6 +416,9 @@ func TestSecretHandler_PostSecret(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+
+			gin.SetMode(gin.ReleaseMode)
+			gin.DefaultWriter = ioutil.Discard
 
 			router := gin.New()
 			h := SecretHandler{
