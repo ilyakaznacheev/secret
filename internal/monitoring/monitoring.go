@@ -10,7 +10,9 @@ import (
 )
 
 // MetricsMiddleware adds Prometheus monitoring to the endpoint handler
-func MetricsMiddleware(hf gin.HandlerFunc, ms *MetricSet) gin.HandlerFunc {
+func MetricsMiddleware(hf gin.HandlerFunc, endpoint string) gin.HandlerFunc {
+	ms := NewMetricSet(endpoint)
+
 	return func(c *gin.Context) {
 		start := time.Now()
 		hf(c)
